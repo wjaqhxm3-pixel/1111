@@ -1,4 +1,5 @@
 using System.Text;
+using Xunit;
 
 namespace ScreenSealWindows.Tests;
 
@@ -8,7 +9,7 @@ namespace ScreenSealWindows.Tests;
 /// </summary>
 public class ReadmeTests
 {
-    private const string ReadmePath = "../../../README.md";
+    private const string ReadmePath = "../../../../README.md"; // Assuming tests are in bin/Debug/net9.0/
     private const string ExpectedContent = "CodeRabbit 테스트 중!";
 
     [Fact]
