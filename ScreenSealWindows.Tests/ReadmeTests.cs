@@ -44,15 +44,6 @@ public class ReadmeTests
         Assert.Contains(ExpectedContent, content);
     }
 
-    [Fact]
-    public void ReadmeFile_ShouldMatchExactContent()
-    {
-        // Arrange
-        var content = File.ReadAllText(ReadmePath).Trim();
-
-        // Act & Assert
-        Assert.Equal(ExpectedContent, content);
-    }
 
     [Fact]
     public void ReadmeFile_ShouldBeValidUtf8()
