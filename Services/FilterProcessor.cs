@@ -11,9 +11,7 @@ namespace ScreenSealWindows.Services;
 /// </summary>
 public sealed class FilterProcessor
 {
-    public static readonly FilterProcessor Shared = new();
-
-    private FilterProcessor() { }
+    private FilterProcessor() { } // Keep private to prevent instantiation, but remove Shared field
 
     /// <summary>
     /// Apply the specified mosaic filter to the given bitmap.
@@ -309,8 +307,7 @@ public sealed class FilterProcessor
                 {
                     for (int dx = 0; dx < cxW; dx += 2)
                     {
-                        int MathClamp(int val, int max) => Math.Clamp(val, 0, max - 1);
-                        int idx = MathClamp(chromaY + dy, h) * stride + MathClamp(chromaX + dx, w) * 4;
+                        int idx = Math.Clamp(chromaY + dy, 0, h - 1) * stride + Math.Clamp(chromaX + dx, 0, w - 1) * 4;
                         cB += srcPixels[idx];
                         cG += srcPixels[idx + 1];
                         cR += srcPixels[idx + 2];
@@ -329,8 +326,7 @@ public sealed class FilterProcessor
                 {
                     for (int dx = 0; dx < currentBlockW; dx += 2)
                     {
-                        int MathClamp(int val, int max) => Math.Clamp(val, 0, max - 1);
-                        int idx = MathClamp(cy + dy, h) * stride + MathClamp(cx + dx, w) * 4;
+                        int idx = Math.Clamp(cy + dy, 0, h - 1) * stride + Math.Clamp(cx + dx, 0, w - 1) * 4;
                         sL += (long)(srcPixels[idx + 2] * 0.299 + srcPixels[idx + 1] * 0.587 + srcPixels[idx] * 0.114);
                         lCount++;
                     }
