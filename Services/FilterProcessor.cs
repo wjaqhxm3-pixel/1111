@@ -18,7 +18,12 @@ public sealed class FilterProcessor
     /// <summary>
     /// Apply the specified mosaic filter to the given bitmap.
     /// </summary>
-    public Bitmap ApplyFilter(Bitmap source, MosaicType type, double intensity, Color solidColor)
+    /// <param name="source">The input bitmap to filter.</param>
+    /// <param name="type">The type of mosaic effect to apply.</param>
+    /// <param name="intensity">The effect intensity (1-100). Interpretive meaning varies by filter type.</param>
+    /// <param name="solidColor">The color to use for the SolidColor filter type.</param>
+    /// <returns>A new bitmap with the filter applied.</returns>
+    public static Bitmap ApplyFilter(Bitmap source, MosaicType type, int intensity, Color? solidColor = null)
     {
         if (intensity <= 0) return (Bitmap)source.Clone();
 
@@ -255,7 +260,7 @@ public sealed class FilterProcessor
     /// It utilizes block-based processing and chroma subsampling without drawing explicit grid lines.
     /// </summary>
     /// <param name="source">The original high-quality bitmap.</param>
-    /// <param name="intensity">The level of compression distortion to simulate.</param>
+    /// <param name="intensity">The level of compression distortion to simulate (1-100). Higher values mean more artifacts.</param>
     /// <returns>A bitmap exhibiting characteristic JPEG blocking and color smearing.</returns>
     private Bitmap ApplyJpegCompression(Bitmap source, int intensity)
     {
