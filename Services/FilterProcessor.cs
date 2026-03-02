@@ -179,8 +179,12 @@ public sealed class FilterProcessor
     }
 
     /// <summary>
-    /// RetroGaming: Reduces color depth (quantization) and adds pixelation to simulate retro console graphics.
+    /// RetroGaming Filter: Simulates retro video game aesthetics by combining adjustable pixel density 
+    /// and reduced color depth (quantization).
     /// </summary>
+    /// <param name="source">The input full-color high-resolution bitmap.</param>
+    /// <param name="intensity">Level of abstraction (1-100). Higher values result in larger pixels and fewer colors.</param>
+    /// <returns>A stylized bitmap with a distinct retro hardware feel.</returns>
     private Bitmap ApplyRetroGaming(Bitmap source, int intensity)
     {
         int w = source.Width;
@@ -247,9 +251,12 @@ public sealed class FilterProcessor
     }
 
     /// <summary>
-    /// JpegCompression: Simulates JPG artifacts using blocking and chroma subsampling.
-    /// Does not draw explicit grid lines, solely relies on block averaging.
+    /// JpegCompression Filter: Replicates the visual artifacts of low-quality JPEG encoding.
+    /// It utilizes block-based processing and chroma subsampling without drawing explicit grid lines.
     /// </summary>
+    /// <param name="source">The original high-quality bitmap.</param>
+    /// <param name="intensity">The level of compression distortion to simulate.</param>
+    /// <returns>A bitmap exhibiting characteristic JPEG blocking and color smearing.</returns>
     private Bitmap ApplyJpegCompression(Bitmap source, int intensity)
     {
         int w = source.Width;
