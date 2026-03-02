@@ -1,0 +1,22 @@
+<Window x:Class="ScreenSealWindows.Windows.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ScreenSeal Settings" Height="250" Width="380"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True" ResizeMode="NoResize">
+    <StackPanel Margin="15">
+        <TextBlock Text="Hotkey Settings" FontWeight="Bold" FontSize="16" Margin="0,0,0,15"/>
+
+        <TextBlock Text="Snip Mode (Create Mosaic):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+        <TextBox x:Name="CreateHotkeyBox" IsReadOnly="True" Cursor="Hand" 
+                 ToolTip="Click here and press the desired shortcut" Margin="0,0,0,15"
+                 PreviewKeyDown="CreateHotkeyBox_PreviewKeyDown" Padding="5"/>
+
+        <TextBlock Text="Clear All Mosaics:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+        <TextBox x:Name="ClearHotkeyBox" IsReadOnly="True" Cursor="Hand" 
+                 ToolTip="Click here and press the desired shortcut" Margin="0,0,0,15"
+                 PreviewKeyDown="ClearHotkeyBox_PreviewKeyDown" Padding="5"/>
+
+        <Button Content="Save and Close" Click="SaveButton_Click" Width="120" Height="25" HorizontalAlignment="Right"/>
+    </StackPanel>
+</Window>
