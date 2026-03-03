@@ -11,32 +11,35 @@ namespace ScreenSealWindows.Services;
 /// </summary>
 public sealed class FilterProcessor
 {
-    public static readonly FilterProcessor Shared = new();
-
-    private FilterProcessor() { }
+    private FilterProcessor() { } // Keep private to prevent instantiation, but remove Shared field
 
     /// <summary>
     /// Apply the specified mosaic filter to the given bitmap.
     /// </summary>
-    public Bitmap ApplyFilter(Bitmap source, MosaicType type, double intensity, Color solidColor)
+    /// <param name="source">The input bitmap to filter.</param>
+    /// <param name="type">The type of mosaic effect to apply.</param>
+    /// <param name="intensity">The effect intensity (1-100). Interpretive meaning varies by filter type.</param>
+    /// <param name="solidColor">The color to use for the SolidColor filter type.</param>
+    /// <returns>A new bitmap with the filter applied.</returns>
+    public static Bitmap ApplyFilter(Bitmap source, MosaicType type, int intensity, Color? solidColor = null)
     {
         if (intensity <= 0) return (Bitmap)source.Clone();
 
         return type switch
         {
-            MosaicType.Pixelation => ApplyPixelation(source, Math.Max(2, (int)intensity)),
-            MosaicType.GaussianBlur => ApplyBoxBlur(source, Math.Max(1, (int)intensity)),
-            MosaicType.RetroGaming => ApplyRetroGaming(source, (int)intensity),
-            MosaicType.JpegCompression => ApplyJpegCompression(source, (int)intensity),
-            MosaicType.SolidColor => ApplySolidColor(source, solidColor, intensity),
-            _ => source
+            MosaicType.Pixelation => ApplyPixelation(source, intensity),
+            MosaicType.GaussianBlur => ApplyBoxBlur(source, intensity),
+            MosaicType.RetroGaming => ApplyRetroGaming(source, intensity),
+            MosaicType.JpegCompression => ApplyJpegCompression(source, intensity),
+            MosaicType.SolidColor => ApplySolidColor(source, solidColor ?? Color.Black, intensity),
+            _ => (Bitmap)source.Clone()
         };
     }
 
     /// <summary>
     /// Fills the bitmap with a specified solid color applying intensity as opacity.
     /// </summary>
-    private Bitmap ApplySolidColor(Bitmap source, Color color, double intensity)
+    private static Bitmap ApplySolidColor(Bitmap source, Color color, int intensity)
     {
         var result = (Bitmap)source.Clone();
         using (var g = Graphics.FromImage(result))
@@ -52,7 +55,7 @@ public sealed class FilterProcessor
     /// <summary>
     /// Pixelation: scale down then scale back up with nearest-neighbor interpolation.
     /// </summary>
-    private Bitmap ApplyPixelation(Bitmap source, int pixelSize)
+    private static Bitmap ApplyPixelation(Bitmap source, int pixelSize)
     {
         int w = source.Width;
         int h = source.Height;
@@ -81,7 +84,7 @@ public sealed class FilterProcessor
     /// <summary>
     /// Approximation of Gaussian blur using multiple box blur passes.
     /// </summary>
-    private Bitmap ApplyBoxBlur(Bitmap source, int radius)
+    private static Bitmap ApplyBoxBlur(Bitmap source, int radius)
     {
         // Clamp to reasonable bounds
         radius = Math.Min(radius, 50);
@@ -179,9 +182,13 @@ public sealed class FilterProcessor
     }
 
     /// <summary>
-    /// RetroGaming: Reduces color depth (quantization) and adds pixelation to simulate retro console graphics.
+    /// RetroGaming Filter: Simulates retro video game aesthetics by combining adjustable pixel density 
+    /// and reduced color depth (quantization).
     /// </summary>
-    private Bitmap ApplyRetroGaming(Bitmap source, int intensity)
+    /// <param name="source">The input full-color high-resolution bitmap.</param>
+    /// <param name="intensity">Level of abstraction (1-100). Higher values result in larger pixels and fewer colors.</param>
+    /// <returns>A stylized bitmap with a distinct retro hardware feel.</returns>
+    private static Bitmap ApplyRetroGaming(Bitmap source, int intensity)
     {
         int w = source.Width;
         int h = source.Height;
@@ -247,10 +254,13 @@ public sealed class FilterProcessor
     }
 
     /// <summary>
-    /// JpegCompression: Simulates JPG artifacts using blocking and chroma subsampling.
-    /// Does not draw explicit grid lines, solely relies on block averaging.
+    /// JpegCompression Filter: Replicates the visual artifacts of low-quality JPEG encoding.
+    /// It utilizes block-based processing and chroma subsampling without drawing explicit grid lines.
     /// </summary>
-    private Bitmap ApplyJpegCompression(Bitmap source, int intensity)
+    /// <param name="source">The original high-quality bitmap.</param>
+    /// <param name="intensity">The level of compression distortion to simulate (1-100). Higher values mean more artifacts.</param>
+    /// <returns>A bitmap exhibiting characteristic JPEG blocking and color smearing.</returns>
+    private static Bitmap ApplyJpegCompression(Bitmap source, int intensity)
     {
         int w = source.Width;
         int h = source.Height;
@@ -297,8 +307,7 @@ public sealed class FilterProcessor
                 {
                     for (int dx = 0; dx < cxW; dx += 2)
                     {
-                        int MathClamp(int val, int max) => Math.Clamp(val, 0, max - 1);
-                        int idx = MathClamp(chromaY + dy, h) * stride + MathClamp(chromaX + dx, w) * 4;
+                        int idx = Math.Clamp(chromaY + dy, 0, h - 1) * stride + Math.Clamp(chromaX + dx, 0, w - 1) * 4;
                         cB += srcPixels[idx];
                         cG += srcPixels[idx + 1];
                         cR += srcPixels[idx + 2];
@@ -317,8 +326,7 @@ public sealed class FilterProcessor
                 {
                     for (int dx = 0; dx < currentBlockW; dx += 2)
                     {
-                        int MathClamp(int val, int max) => Math.Clamp(val, 0, max - 1);
-                        int idx = MathClamp(cy + dy, h) * stride + MathClamp(cx + dx, w) * 4;
+                        int idx = Math.Clamp(cy + dy, 0, h - 1) * stride + Math.Clamp(cx + dx, 0, w - 1) * 4;
                         sL += (long)(srcPixels[idx + 2] * 0.299 + srcPixels[idx + 1] * 0.587 + srcPixels[idx] * 0.114);
                         lCount++;
                     }

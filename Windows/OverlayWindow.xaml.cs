@@ -28,7 +28,7 @@ public partial class OverlayWindow : Window
     private System.Windows.Point _dragStart;
     private bool _isDragging;
     private readonly SettingsService _settingsService;
-    private readonly FilterProcessor _filterProcessor = FilterProcessor.Shared;
+
 
     public OverlayWindow(int index, SettingsService settingsService)
     {
@@ -118,10 +118,10 @@ public partial class OverlayWindow : Window
     {
         if (OriginalSnapshot == null) return;
 
-        using var filtered = _filterProcessor.ApplyFilter(
+        using var filtered = FilterProcessor.ApplyFilter(
             OriginalSnapshot,
             Configuration.MosaicType,
-            Configuration.Intensity,
+            (int)Configuration.Intensity,
             Configuration.SolidColor);
 
         var hwnd = new WindowInteropHelper(this).Handle;

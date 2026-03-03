@@ -1,4 +1,5 @@
 using System.Text;
+using Xunit;
 
 namespace ScreenSealWindows.Tests;
 
@@ -8,8 +9,19 @@ namespace ScreenSealWindows.Tests;
 /// </summary>
 public class ReadmeTests
 {
-    private const string ReadmePath = "../../../README.md";
+    private static readonly string ReadmePath = Path.Combine(GetRepoRoot(), "README.md");
     private const string ExpectedContent = "CodeRabbit 테스트 중!";
+
+    private static string GetRepoRoot()
+    {
+        var currentDir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+        while (currentDir != null && !Directory.Exists(Path.Combine(currentDir.FullName, ".git")) && 
+               !currentDir.GetFiles("*.sln").Any())
+        {
+            currentDir = currentDir.Parent;
+        }
+        return currentDir?.FullName ?? throw new DirectoryNotFoundException("Could not find repository root.");
+    }
 
     [Fact]
     public void ReadmeFile_ShouldExist()

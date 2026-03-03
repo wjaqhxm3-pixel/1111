@@ -12,4 +12,10 @@
     <RootNamespace>ScreenSealWindows</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="ScreenSealWindows.Tests\**" />
+    <Content Remove="ScreenSealWindows.Tests\**" />
+    <EmbeddedResource Remove="ScreenSealWindows.Tests\**" />
+    <None Remove="ScreenSealWindows.Tests\**" />
+  </ItemGroup>
 </Project>
